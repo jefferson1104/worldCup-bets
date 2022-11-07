@@ -1,10 +1,14 @@
+import { FormEvent, useState } from 'react'
 import Image from 'next/image'
+
+import { api } from '../lib/axios'
 
 import appPreviewImg from '../assets/app-nlw-copa-preview.png'
 import logoImg from '../assets/logo.svg'
 import usersAvatarExampleImg from '../assets/users-avatar-example.png'
 import iconCheckImg from '../assets/icon-check.svg'
-import { api } from '../lib/axios'
+
+
 
 interface HomeProps {
   pollCount: number;
@@ -13,6 +17,27 @@ interface HomeProps {
 }
 
 export default function Home(props: HomeProps) {
+  const [pollTitle, setPollTitle] = useState('')
+
+  async function createPoll(event: FormEvent) {
+    event.preventDefault()
+
+    try {
+      const response = await api.post('/polls', {
+        title: pollTitle
+      })
+
+      const { code } = response.data
+
+      await navigator.clipboard.writeText(code)
+
+      alert('Bolão criado com sucesso, o código foi copiado para a area de trasnferência!')
+      setPollTitle('')
+    } catch (error) {
+      console.log(error)
+      alert('Falha ao criar o bolão tente novamente!')
+    }
+  }
 
   return (
     <div className="max-w-[1124px] h-screen mx-auto grid grid-cols-2 items-center gap-28">
@@ -34,12 +59,14 @@ export default function Home(props: HomeProps) {
           </strong>
         </div>
 
-        <form className="mt-10 flex gap-2">
+        <form onSubmit={createPoll} className="mt-10 flex gap-2">
           <input
-            className="flex-1 px-6 py-4 rounded bg-gray-800 border border-gray-600 text-sm"
+            className="flex-1 px-6 py-4 rounded bg-gray-800 border border-gray-600 text-sm text-gray-100"
             type="text"
             required
             placeholder="Qual nome do seu bolão?"
+            value={pollTitle}
+            onChange={event => setPollTitle(event.target.value)}
           />
           <button
             className="bg-yellow-500 px-6 py-4 rounded text-gray-900 font-bold text-sm uppercase hover:bg-yellow-700 transition-all"
