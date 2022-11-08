@@ -4,12 +4,12 @@ import { prisma } from '../lib/prisma';
 import { authenticate } from '../plugins/authenticate';
 
 export async function gameRoutes(fastify: FastifyInstance) {
-  fastify.get('/pools/:id/games', { onRequest: [authenticate] }, async (request) => {
-    const getPoolParams = z.object({
+  fastify.get('/polls/:id/games', { onRequest: [authenticate] }, async (request) => {
+    const getPollParams = z.object({
       id: z.string(),
     })
 
-    const { id } = getPoolParams.parse(request.params);
+    const { id } = getPollParams.parse(request.params);
 
     const games = await prisma.game.findMany({
       orderBy: {
@@ -20,7 +20,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
           where: {
             participant: {
               userId: request.user.sub,
-              poolId: id,
+              pollId: id,
             }
           }
         }
@@ -34,7 +34,7 @@ export async function gameRoutes(fastify: FastifyInstance) {
           guess: game.guesses.length > 0 ? game.guesses[0] : null,
           guesses: undefined,
         }
-      });
+      })
     }
   });
 }
