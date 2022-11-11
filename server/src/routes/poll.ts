@@ -52,7 +52,6 @@ export async function pollRoutes(fastify: FastifyInstance) {
   fastify.post('/polls/join', {
     onRequest: [authenticate]
   },  async (request, response) => {
-    console.log('passou aqui')
     const joinPollBody = z.object({
       code: z.string(),
     });
