@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useToast, FlatList } from 'native-base';
 
-import { Game, GameProps } from '../components/Game';
+import { Game, GameProps } from './Game';
+import { Loading } from './Loading';
+import { EmptyMyPollList } from './EmptyMyPollList';
 
 import { api } from '../services/api';
-import { Loading } from './Loading';
 
 interface Props {
   pollId: string;
+  code: string;
 }
 
-export function Guesses({ pollId }: Props) {
+export function Guesses({ pollId, code }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [games, setGames] = useState<GameProps[]>([]);
   const [firstTeamPoints, setFirstTeamPoints] = useState('');
@@ -90,6 +92,8 @@ export function Guesses({ pollId }: Props) {
           onGuessConfirm={() => handleGuessConfirm(item.id)}
         />
       )}
+      _contentContainerStyle={{ pb: 10 }}
+      ListEmptyComponent={() => <EmptyMyPollList code={code} />}
     />
   );
 }
