@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Icon, useToast, VStack, FlatList } from 'native-base';
 import { Octicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -55,7 +55,12 @@ export function Polls() {
         : <FlatList
             data={polls}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => <PollCard data={item} />}
+            renderItem={({ item }) => (
+              <PollCard
+                data={item}
+                onPress={() => navigate('details', { id: item.id })}
+              />
+            )}
             ListEmptyComponent={() => <EmptyPollList />}
             showsVerticalScrollIndicator={false}
             _contentContainerStyle={{ pb: 10 }}
